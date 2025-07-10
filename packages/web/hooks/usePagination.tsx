@@ -27,7 +27,8 @@ export function usePagination<DataT, ResT = {}>(
     onChange,
     refreshDeps,
     scrollLoadType = 'bottom',
-    EmptyTip
+    EmptyTip,
+    defaultPageNum = 1
   }: {
     pageSize?: number;
     params?: DataT;
@@ -38,6 +39,7 @@ export function usePagination<DataT, ResT = {}>(
     throttleWait?: number;
     scrollLoadType?: 'top' | 'bottom';
     EmptyTip?: React.JSX.Element;
+    defaultPageNum?: number;
   }
 ) {
   const { toast } = useToast();
@@ -55,7 +57,7 @@ export function usePagination<DataT, ResT = {}>(
 
   const fetchData = useMemoizedFn(
     async (num: number = pageNum, ScrollContainerRef?: RefObject<HTMLDivElement>) => {
-      if (noMore && num !== 1) return;
+      if (noMore && num !== defaultPageNum) return;
       setTrue();
 
       try {
@@ -247,7 +249,7 @@ export function usePagination<DataT, ResT = {}>(
   // Reload data
   const { runAsync: refresh } = useRequest(
     async () => {
-      defaultRequest && fetchData(1);
+      defaultRequest && fetchData(defaultPageNum || 1);
     },
     {
       manual: false,

@@ -32,6 +32,8 @@ type CollectionPageContextType = {
   setFilterTags: Dispatch<SetStateAction<string[]>>;
 };
 
+let defaultPageNum = 1;
+
 export const CollectionPageContext = createContext<CollectionPageContextType>({
   openWebSyncConfirm: function (): () => void {
     throw new Error('Function not implemented.');
@@ -114,6 +116,7 @@ const CollectionPageContextProvider = ({ children }: { children: ReactNode }) =>
     pageSize
   } = usePagination(getDatasetCollections, {
     pageSize: 20,
+    defaultPageNum,
     params: {
       datasetId,
       parentId,
@@ -123,6 +126,7 @@ const CollectionPageContextProvider = ({ children }: { children: ReactNode }) =>
     // defaultRequest: false,
     refreshDeps: [parentId, searchText, filterTags]
   });
+  defaultPageNum = pageNum;
 
   const contextValue: CollectionPageContextType = {
     openWebSyncConfirm: openWebSyncConfirm(syncWebsite),
